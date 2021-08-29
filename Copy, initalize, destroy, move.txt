@@ -1,3 +1,10 @@
+/*
+
+Run this to see when different constructors/copy operations are executed.
+Example from Bjarne Stroustroup.
+
+*/
+
 struct X {
 	int val;
 	void out(const string& s, int nv) {
@@ -13,12 +20,12 @@ struct X {
 	X(X&& x) noexcept { val = x.val; out("X(X&&) ", x.val); }
 	X& operator=(const X& x) {
 		val = x.val;
-		out("X::operator==(X&)", x.val);
+		out("X::operator=(X&)", x.val);
 		return *this;
 	}
 	X& operator=(X&& x) noexcept{
 		val = x.val;
-		out("X::operator==(X&&)", x.val);
+		out("X::operator=(X&&)", x.val);
 		return *this;
 	}
 	~X() {
@@ -73,6 +80,6 @@ int main() {
 	delete[] pp;
 	std::cout << "15*****************\n";
 	X x = f();
-	std::cout << "15*****************\n";
+	std::cout << "16****************\n";
 	return 0;
 }
