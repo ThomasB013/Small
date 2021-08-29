@@ -1,0 +1,70 @@
+template<typename Container1, typename Container2>
+//this sometimes doesn't work because c1 might realocate the memory (e.g. vector), which 
+//makes the iterators invalid.
+void merge(Container1& c1, const Container2& c2) {
+	typename Container1::iterator it1 = c1.begin();
+	typename Container2::const_iterator it2 = c2.begin();
+	while (it1 != c1.end() && it2 != c2.end()) {
+		if (*it1 < *it2)
+			++it1;
+		else {
+			c1.insert(it1, *it2);
+			++it2;
+		}
+	}
+	while (it2 != c2.end())
+		c1.push_back(*it2++);
+}
+
+
+//more general
+template<typename Container1, typename Container2, typename Container3>
+void merge(const Container1& c1, const Container2& c2, Container3& to) { 
+	typename Container1::const_iterator it1 = c1.begin();
+	typename Container2::const_iterator it2 = c2.begin();
+	
+	while (it1 != c1.end() && it2 != c2.end()) {
+		if (*it1 < *it2) {
+			to.push_back(*it1);
+			++it1;
+		}
+		else {
+			to.push_back(*it2);
+			++it2;
+		}
+	}
+	while (it2 != c2.end())
+		to.push_back(*it2++);
+	while (it2 != c2.end())
+		to.push_back(*it2++);
+}
+
+//call the following like this:
+//list<int> l{ 3, 12, 20, 30, 40 };
+//vector<int> v{ -4, 8, 15, 60, 70 };
+//vector<int> VV = merge<list<int>, vector<int>, vector<int>>(l, v);
+
+template<typename Container1, typename Container2, typename Container3>
+Container3 merge(const Container1& c1, const Container2& c2) { 
+	typename Container1::const_iterator it1 = c1.begin();
+	typename Container2::const_iterator it2 = c2.begin();
+	
+	Container3 to;
+
+	while (it1 != c1.end() && it2 != c2.end()) {
+		if (*it1 < *it2) {
+			to.push_back(*it1);
+			++it1;
+		}
+		else {
+			to.push_back(*it2);
+			++it2;
+		}
+	}
+	while (it2 != c2.end())
+		to.push_back(*it2++);
+	while (it2 != c2.end())
+		to.push_back(*it2++);
+	return to;
+}
+

@@ -1,0 +1,78 @@
+struct X {
+	int val;
+	void out(const string& s, int nv) {
+		cerr << this << "->" << s << ": " << val << " (" << nv << ")\n";
+	}
+	X() :val(0) {
+		out("X()", 0);
+	}
+	X(int v) :val(v) {
+		out("X(int)", v);
+	}
+	X(const X& x) { val = x.val; out("X(X&) ", x.val); }
+	X(X&& x) noexcept { val = x.val; out("X(X&&) ", x.val); }
+	X& operator=(const X& x) {
+		val = x.val;
+		out("X::operator==(X&)", x.val);
+		return *this;
+	}
+	X& operator=(X&& x) noexcept{
+		val = x.val;
+		out("X::operator==(X&&)", x.val);
+		return *this;
+	}
+	~X() {
+		out("~X()", 0);
+	}
+
+};
+
+X glob(2);
+
+X copy(X a) { return a; }
+
+X copy2(X a) { X aa = a; return aa; }
+
+X& ref_to(X& a) { return a; }
+
+X* make(int i) { X a(i); return new X(a); }
+
+struct XX { X a; X b; };
+
+X& f() { X x(4); return x; } //TROUBLESOME
+
+int main() {
+	X loc{ 4 };
+	std::cout << "1*****************\n";
+	X loc2{ loc };
+	std::cout << "2*****************\n";
+	loc = X{ 5 };
+	std::cout << "3*****************\n";
+	loc2 = copy(loc);
+	std::cout << "4*****************\n";
+	loc2 = copy2(loc);
+	std::cout << "5*****************\n";
+	X loc3{ 6 };
+	std::cout << "6*****************\n";
+	X& r = ref_to(loc);
+	std::cout << "7*****************\n";
+	delete make(7);
+	std::cout << "8*****************\n";
+	delete make(8);
+	std::cout << "9*****************\n";
+	std::vector<X>v(4);
+	std::cout << "10*****************\n";
+	XX loc4;
+	std::cout << "11*****************\n";
+	X* p = new X{ 9 };
+	std::cout << "12*****************\n";
+	delete p;
+	std::cout << "13*****************\n";
+	X* pp = new X[5];
+	std::cout << "14*****************\n";
+	delete[] pp;
+	std::cout << "15*****************\n";
+	X x = f();
+	std::cout << "15*****************\n";
+	return 0;
+}

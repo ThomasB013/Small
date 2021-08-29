@@ -1,0 +1,97 @@
+#include <iostream>
+
+using namespace std;
+
+bool checkRow(int a[9][9], int i, int val) {
+    for (int j = 0; j < 9; ++j)
+        if (a[i][j] == val)
+            return false;
+    return true;
+}
+
+bool checkCol(int a[9][9], int j, int val) { 
+    for (int i = 0; i < 9; ++i)
+        if (a[i][j] == val) 
+            return false;
+    return true;
+}
+
+bool checkBox(int a[9][9], int i, int j, int val) {
+    i = (i / 3)*3; 
+    j = (j / 3)*3; //make it the top left of the box. 5/3 = 1, 1 * 3 = 3.
+    for (int I = 0; I < 3; ++I)
+        for (int J = 0; J < 3; ++J)
+            if (a[i + I][j + J] == val)
+                return false;
+    return true;
+}
+
+bool possible(int a[9][9], int i, int j, int val) {
+    return (checkBox(a, i, j, val) && checkCol(a, j, val) && checkRow(a, i, val));
+}
+
+
+void print(int a[9][9]) {
+    for (int i = 0; i < 9; ++i) {
+        if (i == 3 || i == 6) {
+            for (int i = 0; i < 19; ++i)
+                cout << '-';
+            cout << endl;
+        }
+        for (int j = 0; j < 9; ++j) {
+            if (j == 3 || j == 6)
+                cout << '|';
+            else
+                cout << ' ';
+            if (a[i][j] == 0)
+                cout << ' ';
+            else
+                cout << a[i][j];
+        }
+        cout << endl;
+    }
+}
+
+int COUNTER = 0;
+
+void solve(int a[9][9]) {
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (a[i][j] == 0) {//to be filled in.
+                for (int val = 1; val < 10; ++val) { //for each value
+                    ++COUNTER;
+                    if (possible(a, i, j, val)) { //if it is possible, try it
+                        a[i][j] = val;
+                        solve(a); //try to solve. with this value
+                    }
+                } //if we exit this for loop, we tried all values.
+                a[i][j] = 0; //indicate that the field is undetermined yet. It is not needed to reset everytime because possible() is not disturbed by any 
+                //value except val on place i, j. (and we only try each value once, so this never happens).
+                return; //go back, that is: go back in the stack of solve() calls.
+            }
+        }
+    }
+    print(a); //we will print this as soon as we looped through all the values and didn't encounter a single 0.
+    cout << '\n' << COUNTER << " values tried before we found the solution.\n";
+    COUNTER = 0;
+}
+
+int main()
+{
+    int a[9][9] = {
+        {0, 0, 0, 0, 0, 0, 6, 8, 0},
+        {0, 0, 0, 0, 7, 3, 0, 0, 9},
+        {3, 0, 9, 0, 0, 0, 0, 4, 5},
+        {4, 9, 0, 0, 0, 0, 0, 0, 0},
+        {8, 0, 3, 0, 5, 0, 9, 0, 2},
+        {0, 0, 0, 0, 0, 0, 0, 3, 6},
+        {9, 6, 0, 0, 0, 0, 3, 0, 8},
+        {7, 0, 0, 6, 8, 0, 0, 0, 0},
+        {0, 2, 8, 0, 0, 0, 0, 0, 0}
+    };
+
+    print(a);
+    cout << "\nSOLVED:\n\n";
+    solve(a);
+    cout << "Another " << COUNTER << " values were tried to find another solution.\n";
+}
