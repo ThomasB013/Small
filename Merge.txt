@@ -33,8 +33,8 @@ void merge(const Container1& c1, const Container2& c2, Container3& to) {
 			++it2;
 		}
 	}
-	while (it2 != c2.end())
-		to.push_back(*it2++);
+	while (it1 != c1.end())
+		to.push_back(*it1++);
 	while (it2 != c2.end())
 		to.push_back(*it2++);
 }
@@ -44,6 +44,8 @@ void merge(const Container1& c1, const Container2& c2, Container3& to) {
 //vector<int> v{ -4, 8, 15, 60, 70 };
 //vector<int> VV = merge<list<int>, vector<int>, vector<int>>(l, v);
 
+
+/*
 template<typename Container1, typename Container2, typename Container3>
 Container3 merge(const Container1& c1, const Container2& c2) { 
 	typename Container1::const_iterator it1 = c1.begin();
@@ -61,10 +63,22 @@ Container3 merge(const Container1& c1, const Container2& c2) {
 			++it2;
 		}
 	}
-	while (it2 != c2.end())
-		to.push_back(*it2++);
+	while (it1 != c1.end())
+		to.push_back(*it1++);
 	while (it2 != c2.end())
 		to.push_back(*it2++);
 	return to;
 }
+*/
+
+//But could better be written like this: To avoid duplication.
+Container3 merge(const Container1& c1, const Container2& c2) { 
+	Container3 to;
+	merge(c1, c2, to);
+	return to;
+}
+
+
+
+
 
